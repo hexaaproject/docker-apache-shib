@@ -1,0 +1,8 @@
+# apache2-shib
+
+Docker image for Apache2.4 + Shibboleth.
+
+Image is to be used as an entry point for docker network, thus functioning
+as a proxy while providing Shibboleth authentication and SSL termination.
+
+*Under development*
