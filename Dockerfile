@@ -9,16 +9,19 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+COPY ./logformats.conf /etc/apache2/conf-enabled/
+
 # Enable apache modules, generate dummy keys to ensure shibboleth can start,
 # then redirect logs to STDOUT.
-RUN a2enmod shib2 proxy_fcgi \
+RUN a2enmod shib2 proxy_fcgi rewrite \
     && cd /etc/shibboleth/ && shib-keygen \
-    && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
-    && ln -sf /proc/self/fd/1 /var/log/apache2/error.log \
-    && ln -sf /proc/self/fd/1 /var/log/shibboleth/shibd.log \
-    && ln -sf /proc/self/fd/1 /var/log/shibboleth/shibd_warn.log \
-    && ln -sf /proc/self/fd/1 /var/log/shibboleth/signature.log \
-    && ln -sf /proc/self/fd/1 /var/log/shibboleth/transaction.log
+    && ln -sf /proc/self/fd/2 /var/log/apache2/access.log \
+    && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
+    && ln -sf /proc/self/fd/2 /var/log/shibboleth/shibd.log \
+    && ln -sf /proc/self/fd/2 /var/log/shibboleth/shibd_warn.log \
+    && ln -sf /proc/self/fd/2 /var/log/shibboleth/signature.log \
+    && ln -sf /proc/self/fd/2 /var/log/shibboleth/transaction.log \
+    && ln -sf /proc/self/fd/2 /var/log/apache2/other_vhosts_access.log
     
 VOLUME /etc/shibboleth /etc/apache2/sites-enabled /var/www
 
