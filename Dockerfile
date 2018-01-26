@@ -11,10 +11,9 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 COPY ./logformats.conf /etc/apache2/conf-enabled/
 
-# Enable apache modules, generate dummy keys to ensure shibboleth can start,
+# Generate dummy keys to ensure shibboleth can start,
 # then redirect logs to STDOUT.
-RUN a2enmod shib2 proxy_fcgi rewrite \
-    && cd /etc/shibboleth/ && shib-keygen \
+RUN cd /etc/shibboleth/ && shib-keygen \
     && ln -sf /proc/self/fd/2 /var/log/apache2/access.log \
     && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
     && ln -sf /proc/self/fd/2 /var/log/shibboleth/shibd.log \
