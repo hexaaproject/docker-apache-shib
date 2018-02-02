@@ -5,6 +5,9 @@ MAINTAINER Balázs Soltész <solazs@sztaki.hu>
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \
+    && apt-get -y --no-install-recommends install software-properties-common \
+    && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/apache2 \
+    && apt-get update \
     && apt-get -y --no-install-recommends install apache2 libapache2-mod-shib2 openssl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

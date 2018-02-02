@@ -11,6 +11,6 @@ fi
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
-a2enmod $APACHE_SHIB_APACHE_MODULES_TO_START
+a2enmod ${APACHE_SHIB_APACHE_MODULES_TO_START}
 
 exec apachectl -DFOREGROUND
