@@ -1,6 +1,12 @@
 # apache2-shib
 
-Docker image for Apache2.4 + Shibboleth2 (SP).
+Docker image for Apache2.4 + Shibboleth3 (SP).
+
+Forked from [solazs/docker-apache-shib](https://github.com/solazs/docker-apache-shib)
+
+## Building
+
+`docker build -t hexaaproject/apache-shib .`
 
 ## Usage
 
@@ -11,6 +17,5 @@ Mount any Shibboleth config files under `/etc/shibboleth/` to override the defau
 
 **Available environment variables:**
 
-* `APACHE_SHIB_APACHE_MODULES_TO_START`: default value: `"shib2 ssl"` - which modules to "`a2enmod`" before starting.
+* `APACHE_SHIB_APACHE_MODULES_TO_START`: default value: `"shib ssl"` - which modules to "`a2enmod`" before starting.
 * `APACHE_SHIB_APACHE_START_SHIB`: default value: `"true"` - whether to start Shibboleth or not (valuable for development, as a Shibboleth session can be mocked through `SetEnv` in an Apache config).
-
