@@ -8,17 +8,20 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     && apt-get -y --no-install-recommends install software-properties-common \
     && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/apache2 \
     && apt-get update \
-    && apt-get -y --no-install-recommends install apache2 openssl curl gpg-agent \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN curl -O http://pkg.switch.ch/switchaai/SWITCHaai-swdistrib.asc \
+    && apt install -y --no-install-recommends openssl curl gpg-agent \
+    && curl -O http://pkg.switch.ch/switchaai/SWITCHaai-swdistrib.asc \
     && echo '67f733e2cdb248e96275546146ea2997b6d0c0575c9a37cb66e00d6012a51f68 SWITCHaai-swdistrib.asc' | sha256sum --check \
     && echo $fingerprint \
     && apt-key add SWITCHaai-swdistrib.asc \
-    && echo 'deb http://pkg.switch.ch/switchaai/ubuntu bionic main' > /etc/apt/sources.list.d/SWITCHaai-swdistrib.list \
+    && apt purge -y --autoremove software-properties-common curl gpg-agent \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo 'deb http://pkg.switch.ch/switchaai/ubuntu bionic main' > /etc/apt/sources.list.d/SWITCHaai-swdistrib.list \
     && apt-get update \
-    && apt-get install --install-recommends -y shibboleth
+    && apt-get install --install-recommends -y apache2 shibboleth \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY ./logformats.conf /etc/apache2/conf-enabled/
 
