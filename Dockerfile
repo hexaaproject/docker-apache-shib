@@ -19,16 +19,14 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 RUN echo 'deb http://pkg.switch.ch/switchaai/ubuntu bionic main' > /etc/apt/sources.list.d/SWITCHaai-swdistrib.list \
     && apt-get update \
-    && apt-get install --install-recommends -y apache2 shibboleth \
+    && apt-get install --install-recommends -y apache2 shibboleth sudo \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY ./logformats.conf /etc/apache2/conf-enabled/
 
-# Generate dummy keys to ensure shibboleth can start,
-# then redirect logs to STDOUT.
-RUN cd /etc/shibboleth/ && shib-keygen \
-    && ln -sf /proc/self/fd/2 /var/log/apache2/access.log \
+# redirect logs to STDOUT.
+RUN    ln -sf /proc/self/fd/2 /var/log/apache2/access.log \
     && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
     && ln -sf /proc/self/fd/2 /var/log/shibboleth/shibd.log \
     && ln -sf /proc/self/fd/2 /var/log/shibboleth/shibd_warn.log \
@@ -39,6 +37,7 @@ RUN cd /etc/shibboleth/ && shib-keygen \
 VOLUME /etc/shibboleth /etc/apache2/sites-enabled /var/www
 
 COPY ./httpd-shibd-foreground /usr/local/bin/
-CMD [ "httpd-shibd-foreground" ]
 
 EXPOSE 80 443
+
+CMD [ "httpd-shibd-foreground" ]

@@ -4,10 +4,32 @@ set -e
 APACHE_SHIB_APACHE_MODULES_TO_START=${APACHE_SHIB_APACHE_MODULES_TO_START:-"shib ssl"}
 APACHE_SHIB_APACHE_START_SHIB=${APACHE_SHIB_APACHE_START_SHIB:-"true"}
 
+APACHE_SHIB_SHIB_GENERATE_KEY=${APACHE_SHIB_SHIB_GENERATE_KEY:-0}
+APACHE_SHIB_SHIB_HOSTNAME=${APACHE_SHIB_SHIB_HOSTNAME:-"domain.tld"}
+APACHE_SHIB_SHIB_ENTITY_ID=${APACHE_SHIB_SHIB_ENTITY_ID:-"https://domain.tld/shibboleth"}
+
+if [[ -r /opt/certs-shib/sp-key.pem && -r /opt/certs-shib/sp-cert.pem ]]; then
+    echo 'Shibboleth keys found, copying'
+elif [[ $APACHE_SHIB_SHIB_GENERATE_KEY -eq 1 ]]; then
+    echo 'No Shibboleth certificate found, generating temporary cert'
+    shib-keygen -f -u _shibd -y 3\
+        -h "$APACHE_SHIB_SHIB_HOSTNAME" \
+        -e "$APACHE_SHIB_SHIB_ENTITY_ID" \
+        -o /opt/certs-shib/
+else
+    echo 'No Shibboleth certificate found and generating is disabled.'
+    exit 1
+fi
+
+cp -v /opt/certs-shib/sp-* /etc/shibboleth/
+chown _shibd etc/shibboleth/sp-*
+
 a2enmod ${APACHE_SHIB_APACHE_MODULES_TO_START}
 
+mkdir -p /run/shibboleth
+chown _shibd /run/shibboleth
 if [ "$APACHE_SHIB_APACHE_START_SHIB" = "true" ]; then
-  /etc/init.d/shibd start
+  sudo -u _shibd /etc/init.d/shibd start
 fi
 
 # Apache gets grumpy about PID files pre-existing
