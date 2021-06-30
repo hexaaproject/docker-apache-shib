@@ -12,6 +12,7 @@ if [[ -r /opt/certs-shib/sp-key.pem && -r /opt/certs-shib/sp-cert.pem ]]; then
     echo 'Shibboleth keys found, copying'
 elif [[ $APACHE_SHIB_SHIB_GENERATE_KEY -eq 1 ]]; then
     echo 'No Shibboleth certificate found, generating temporary cert'
+    mkdir -p /opt/certs-shib
     shib-keygen -f -u _shibd -y 3\
         -h "$APACHE_SHIB_SHIB_HOSTNAME" \
         -e "$APACHE_SHIB_SHIB_ENTITY_ID" \
