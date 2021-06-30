@@ -1,6 +1,6 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
-MAINTAINER Balázs Soltész <solazs@sztaki.hu>
+MAINTAINER Peter Tóth <tothp@sztaki.hu>
 
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \

@@ -5,11 +5,15 @@ applications with SAML SSO authentication.
 
 Forked from [solazs/docker-apache-shib](https://github.com/solazs/docker-apache-shib)
 
+The built image is available on [Docker Hub](https://hub.docker.com/r/hexaaproject/apache-shib)
+
 ## Building
 
 `docker build -t hexaaproject/apache-shib .`
 
 ## Usage
+
+You can see an example config in the [HEXAA frontend Ansible role](https://github.com/hexaaproject/ansible-role-hexaa-frontend)
 
 Mount your Apache config to `/etc/sites-enabled/000-default.conf` (more
 config files can be mounted under `/etc/sites-enabled/`).
