@@ -1,0 +1,23 @@
+---
+image: gitlab/dind
+
+variables:
+  CONTAINER_STABLE_RELEASE_IMAGE: hexaaproject/apache-shib:latest
+
+services:
+- docker:dind
+
+stages:
+- build
+#- test
+#- release
+
+build:
+  stage: build
+  script:
+    - docker build -t $CONTAINER_STABLE_RELEASE_IMAGE .
+
+    # log in to hub.docker.com
+    - docker login -u $DOCKERHUB_REGISTRY_USER -p $DOCKERHUB_REGISTRY_PASS
+
+    - docker push $CONTAINER_STABLE_RELEASE_IMAGE
